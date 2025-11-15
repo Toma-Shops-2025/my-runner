@@ -152,15 +152,33 @@ export class OrderAutomationService {
       // This ensures drivers who are marked as online still get notifications
       if (activeDriverIds.size === 0) {
         console.log('⚠️ No drivers found with recent last_seen, trying fallback check for online drivers...');
+        console.log(`🔍 Fallback query: Looking for drivers where driver_id IN (${driverIds.join(', ')}) AND is_online = true`);
+        
         const { data: onlineDriversData, error: onlineError } = await supabase
           .from('driver_availability')
           .select('driver_id, is_online')
           .in('driver_id', driverIds)
           .eq('is_online', true);
 
-        if (!onlineError && onlineDriversData) {
-          activeDriverIds = new Set(onlineDriversData.map((item: any) => item.driver_id));
-          console.log(`✅ Found ${activeDriverIds.size} online drivers via fallback check`);
+        if (onlineError) {
+          console.error('❌ Fallback query error:', onlineError);
+        } else {
+          console.log(`📊 Fallback query returned ${onlineDriversData?.length || 0} results:`, onlineDriversData);
+          if (onlineDriversData && onlineDriversData.length > 0) {
+            activeDriverIds = new Set(onlineDriversData.map((item: any) => item.driver_id));
+            console.log(`✅ Found ${activeDriverIds.size} online drivers via fallback check (driver_ids: ${Array.from(activeDriverIds).join(', ')})`);
+          } else {
+            console.log(`⚠️ Fallback query returned 0 results. Checking all driver_availability rows...`);
+            // Debug: Check ALL driver_availability rows to see what's there
+            const { data: allAvailabilityData, error: allError } = await supabase
+              .from('driver_availability')
+              .select('driver_id, is_online, last_seen');
+            if (!allError && allAvailabilityData) {
+              console.log(`📋 All driver_availability rows (${allAvailabilityData.length} total):`, allAvailabilityData);
+              const onlineInDb = allAvailabilityData.filter((item: any) => item.is_online === true);
+              console.log(`📋 Online drivers in DB (${onlineInDb.length} total):`, onlineInDb);
+            }
+          }
         }
       }
 
