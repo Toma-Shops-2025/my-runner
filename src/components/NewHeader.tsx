@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import NewAuthModal from './NewAuthModal';
 import AvatarUpload from './AvatarUpload';
-import { User, LogOut, Package, Car, BarChart3, Settings, Home, Menu, X, ArrowRightLeft, BookOpen, Download, Smartphone } from 'lucide-react';
+import { User, LogOut, Package, Car, BarChart3, Settings, Home, Menu, X, BookOpen, Download, Smartphone } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const NewHeader: React.FC = () => {
@@ -139,15 +139,19 @@ const NewHeader: React.FC = () => {
                 </h1>
               </div>
               <nav className="hidden md:ml-8 md:flex md:space-x-8">
-                <button onClick={() => handleNavigation('/services')} className="text-gray-300 hover:text-teal-400 px-3 py-2 text-sm font-medium">
-                  Services
-                </button>
-                <button onClick={() => handleScrollToSection('how-it-works')} className="text-gray-300 hover:text-teal-400 px-3 py-2 text-sm font-medium">
-                  How It Works
-                </button>
-                <button onClick={() => handleNavigation('/about')} className="text-gray-300 hover:text-teal-400 px-3 py-2 text-sm font-medium">
-                  About
-                </button>
+                {!user || profile?.user_type !== 'driver' ? (
+                  <>
+                    <button onClick={() => handleNavigation('/services')} className="text-gray-300 hover:text-teal-400 px-3 py-2 text-sm font-medium">
+                      Services
+                    </button>
+                    <button onClick={() => handleScrollToSection('how-it-works')} className="text-gray-300 hover:text-teal-400 px-3 py-2 text-sm font-medium">
+                      How It Works
+                    </button>
+                    <button onClick={() => handleNavigation('/about')} className="text-gray-300 hover:text-teal-400 px-3 py-2 text-sm font-medium">
+                      About
+                    </button>
+                  </>
+                ) : null}
                 <button onClick={() => {
                   if (user) {
                     handleNavigation('/driver-dashboard');
@@ -258,11 +262,6 @@ const NewHeader: React.FC = () => {
                           <BookOpen className="mr-2 h-4 w-4" />
                           Driver Training
                         </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={handleSwitchToCustomer}>
-                          <ArrowRightLeft className="mr-2 h-4 w-4" />
-                          Switch to Customer Mode
-                        </DropdownMenuItem>
                       </>
                     )}
                     
@@ -356,24 +355,28 @@ const NewHeader: React.FC = () => {
                     Get MY-RUNNER.COM App
                   </button>
                 )}
-                <button 
-                  onClick={() => handleNavigation('/services')}
-                  className="block w-full text-left px-3 py-2 text-base font-medium text-gray-300 hover:text-teal-400 hover:bg-gray-700 rounded-md"
-                >
-                  Services
-                </button>
-                <button 
-                  onClick={() => handleScrollToSection('how-it-works')}
-                  className="block w-full text-left px-3 py-2 text-base font-medium text-gray-300 hover:text-teal-400 hover:bg-gray-700 rounded-md"
-                >
-                  How It Works
-                </button>
-                <button 
-                  onClick={() => handleNavigation('/about')}
-                  className="block w-full text-left px-3 py-2 text-base font-medium text-gray-300 hover:text-teal-400 hover:bg-gray-700 rounded-md"
-                >
-                  About
-                </button>
+                {!user || profile?.user_type !== 'driver' ? (
+                  <>
+                    <button 
+                      onClick={() => handleNavigation('/services')}
+                      className="block w-full text-left px-3 py-2 text-base font-medium text-gray-300 hover:text-teal-400 hover:bg-gray-700 rounded-md"
+                    >
+                      Services
+                    </button>
+                    <button 
+                      onClick={() => handleScrollToSection('how-it-works')}
+                      className="block w-full text-left px-3 py-2 text-base font-medium text-gray-300 hover:text-teal-400 hover:bg-gray-700 rounded-md"
+                    >
+                      How It Works
+                    </button>
+                    <button 
+                      onClick={() => handleNavigation('/about')}
+                      className="block w-full text-left px-3 py-2 text-base font-medium text-gray-300 hover:text-teal-400 hover:bg-gray-700 rounded-md"
+                    >
+                      About
+                    </button>
+                  </>
+                ) : null}
                 
                 {user ? (
                   <>
@@ -411,13 +414,6 @@ const NewHeader: React.FC = () => {
                           className="block w-full text-left px-3 py-2 text-base font-medium text-gray-300 hover:text-teal-400 hover:bg-gray-700 rounded-md"
                         >
                           📚 Driver Training
-                        </button>
-                        <hr className="my-2 border-gray-600" />
-                        <button 
-                          onClick={handleSwitchToCustomer}
-                          className="block w-full text-left px-3 py-2 text-base font-medium text-gray-300 hover:text-teal-400 hover:bg-gray-700 rounded-md"
-                        >
-                          🔄 Switch to Customer Mode
                         </button>
                       </>
                     )}
