@@ -33,6 +33,10 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onRequestPickup, onBecomeDriv
       >
         <source src="/auth-modal-background-mp4.mp4" type="video/mp4" />
       </video>
+      
+      {/* Dark Overlay for better text readability - matches auth modal */}
+      <div className="absolute inset-0 bg-black/85 z-0"></div>
+      
       {/* Fallback gradient background - only shows if video fails */}
       <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-gray-900 to-black z-0" id="hero-gradient-fallback" style={{ display: 'none' }}></div>
       
