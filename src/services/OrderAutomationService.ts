@@ -114,16 +114,21 @@ export class OrderAutomationService {
       }
 
       if (!allDriverProfiles || allDriverProfiles.length === 0) {
-        console.log('No active drivers found, will add to queue');
+        console.log('⚠️ No active drivers found in profiles table (status must be "active"), will add to queue');
         await orderQueueService.addToQueue(order.id);
         return;
       }
+
+      console.log(`📋 Found ${allDriverProfiles.length} active driver profiles:`, allDriverProfiles.map(d => ({ id: d.id, name: d.full_name, status: d.status })));
 
       // Use a more reasonable time window - 1 hour instead of 15 minutes
       // This allows drivers who are logged in but haven't interacted recently to still receive notifications
       const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
 
       const driverIds = allDriverProfiles.map(d => d.id);
+      console.log(`🔍 Checking driver availability for ${driverIds.length} drivers (driver_ids: ${driverIds.join(', ')})`);
+      console.log(`⏰ Looking for drivers with last_seen >= ${oneHourAgo}`);
+      
       const { data: availabilityData, error: availabilityError } = await supabase
         .from('driver_availability')
         .select('driver_id, last_seen, is_online')
@@ -132,7 +137,9 @@ export class OrderAutomationService {
         .gte('last_seen', oneHourAgo); // Secondary filter: last seen within 1 hour (more lenient)
 
       if (availabilityError) {
-        console.error('Error fetching driver availability:', availabilityError);
+        console.error('❌ Error fetching driver availability:', availabilityError);
+      } else {
+        console.log(`📊 Primary query found ${availabilityData?.length || 0} online drivers within last hour:`, availabilityData);
       }
 
       // If primary query returns no results, try a fallback for drivers marked as online
