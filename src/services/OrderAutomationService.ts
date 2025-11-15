@@ -75,6 +75,41 @@ export class OrderAutomationService {
 
   // Broadcast to all online drivers when coordinates are missing or as fallback
   private async broadcastToOnlineDrivers(order: any) {
+    // Call server-side function to avoid RLS issues
+    // The server-side function uses service role key and can query driver_availability
+    try {
+      const response = await fetch('/.netlify/functions/broadcast-to-drivers', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ order })
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Error calling broadcast-to-drivers function:', response.status, errorText);
+        throw new Error(`Failed to broadcast to drivers: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log(`✅ Server-side broadcast result:`, result);
+      
+      if (result.driversNotified === 0) {
+        // No drivers notified, add to queue
+        const orderQueueService = await import('./OrderQueueService').then(m => m.orderQueueService);
+        await orderQueueService.addToQueue(order.id);
+      }
+      
+      return result;
+    } catch (error) {
+      console.error('Error calling broadcast-to-drivers function:', error);
+      // Fallback: try client-side (but this will likely fail due to RLS)
+      return this.broadcastToOnlineDriversClientSide(order);
+    }
+  }
+
+  private async broadcastToOnlineDriversClientSide(order: any) {
     try {
       const { data: currentOrder, error: orderError } = await supabase
         .from('orders')
