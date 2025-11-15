@@ -456,7 +456,8 @@ const NewDriverDashboardPage: React.FC = () => {
           console.error('Error updating profiles:', profileError);
         }
         
-        // Update driver_availability table using RPC function
+        // Update driver_availability table - ALWAYS update last_seen to ensure driver is considered active
+        const now = new Date().toISOString();
         try {
           const { error: availabilityError } = await supabase.rpc('update_driver_availability', {
             p_driver_id: user.id,
@@ -466,25 +467,12 @@ const NewDriverDashboardPage: React.FC = () => {
           });
           
           if (availabilityError) {
-            console.error('Error updating driver_availability:', availabilityError);
-            // Fallback: try direct update if RPC fails
-            await supabase
-              .from('driver_availability')
-              .upsert({
-                driver_id: user.id,
-                is_online: true,
-                is_available: true,
-                max_orders: 3,
-                current_orders: 0,
-                last_seen: new Date().toISOString()
-              }, {
-                onConflict: 'driver_id'
-              });
+            console.error('Error updating driver_availability via RPC:', availabilityError);
           }
-        } catch (availabilityErr) {
-          console.error('Error in driver_availability update:', availabilityErr);
-          // Fallback: try direct update
-          await supabase
+          
+          // ALWAYS do a direct upsert to ensure last_seen is updated, regardless of RPC success
+          // This guarantees the driver will be considered online even if RPC fails
+          const { error: upsertError } = await supabase
             .from('driver_availability')
             .upsert({
               driver_id: user.id,
@@ -492,10 +480,35 @@ const NewDriverDashboardPage: React.FC = () => {
               is_available: true,
               max_orders: 3,
               current_orders: 0,
-              last_seen: new Date().toISOString()
+              last_seen: now // Always update to current time
             }, {
               onConflict: 'driver_id'
             });
+          
+          if (upsertError) {
+            console.error('Error upserting driver_availability:', upsertError);
+          } else {
+            console.log('✅ Driver availability updated with fresh last_seen timestamp');
+          }
+        } catch (availabilityErr) {
+          console.error('Error in driver_availability update:', availabilityErr);
+          // Final fallback: try direct update
+          const { error: finalError } = await supabase
+            .from('driver_availability')
+            .upsert({
+              driver_id: user.id,
+              is_online: true,
+              is_available: true,
+              max_orders: 3,
+              current_orders: 0,
+              last_seen: now // Always update to current time
+            }, {
+              onConflict: 'driver_id'
+            });
+          
+          if (finalError) {
+            console.error('Final fallback failed:', finalError);
+          }
         }
         
         console.log('Driver marked as online and active (synced with driver_availability)');
