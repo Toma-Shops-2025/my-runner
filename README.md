@@ -40,8 +40,8 @@ A modern delivery service platform built with React, TypeScript, and Vite. MY-RU
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/Toma-Shops-2025/MY-RUNNER.COM247.git
-cd MY-RUNNER.COM247
+git clone https://github.com/Toma-Shops-2025/my-runner.git
+cd my-runner
 ```
 
 2. Install dependencies:
