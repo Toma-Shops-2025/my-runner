@@ -64,12 +64,15 @@ export const handler = async (event) => {
     const results = await Promise.allSettled(
       subscriptions.map((subscription) =>
         webpush.sendNotification(subscription, payload).catch(async (err) => {
+          // Remove stale subscriptions (404 = not found, 410 = gone)
           if (err?.statusCode === 404 || err?.statusCode === 410) {
             console.warn('Removing stale subscription', subscription.endpoint);
             await supabase
               .from('push_subscriptions')
               .delete()
               .eq('id', subscription.id);
+          } else {
+            console.error('Push notification error:', err?.statusCode, err?.message);
           }
           throw err;
         })
