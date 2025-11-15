@@ -140,7 +140,7 @@ self.addEventListener('message', function(event) {
   }
 });
 
-// Notification click event handler for in-app notifications
+// Push notification handler - ensures notifications display even when app is in background
 self.addEventListener('push', (event) => {
   if (!event.data) {
     return;
@@ -158,11 +158,33 @@ self.addEventListener('push', (event) => {
     body: payload.body || 'You have a new update.',
     icon: payload.icon || '/icon-192x192.png',
     badge: payload.badge || '/icon-192x192.png',
-    data: payload.data || {},
-    actions: payload.actions || []
+    data: {
+      ...(payload.data || {}),
+      url: payload.data?.url || '/driver-dashboard' // Ensure URL is in data for click handling
+    },
+    actions: payload.actions || [],
+    // Ensure notification displays even when app is in background
+    requireInteraction: false, // Don't force user interaction, but ensure it shows
+    silent: false, // Enable sound/vibration
+    vibrate: [200, 100, 200], // Vibration pattern for mobile devices
+    tag: payload.tag || 'default', // Tag for grouping/replacing notifications
+    timestamp: Date.now(), // Timestamp for better ordering
+    // Re-notify for important notifications (Chrome only)
+    renotify: false
   };
 
-  event.waitUntil(self.registration.showNotification(title, options));
+  // Log for debugging
+  console.log('[SW] Push notification received:', title, options.body);
+
+  event.waitUntil(
+    self.registration.showNotification(title, options)
+      .then(() => {
+        console.log('[SW] Notification displayed successfully');
+      })
+      .catch((error) => {
+        console.error('[SW] Error displaying notification:', error);
+      })
+  );
 });
 
 self.addEventListener('notificationclick', (event) => {

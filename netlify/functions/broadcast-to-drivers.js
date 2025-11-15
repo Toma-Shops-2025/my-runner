@@ -157,7 +157,8 @@ export const handler = async (event) => {
                 total: order.total,
                 pickupAddress: order.pickup_address,
                 deliveryAddress: order.delivery_address,
-                type: 'available'
+                type: 'available',
+                url: '/driver-dashboard' // URL to navigate when notification is clicked
               }
             })
           });
