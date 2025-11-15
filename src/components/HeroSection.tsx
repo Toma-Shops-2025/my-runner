@@ -10,10 +10,26 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onRequestPickup, onBecomeDriv
   const navigate = useNavigate();
   return (
     <section className="relative min-h-screen overflow-hidden">
-      {/* Clean gradient background - removes old branding elements */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-gray-900 to-black"></div>
+      {/* Video background */}
+      <div className="absolute inset-0 z-0">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+          onError={(e) => {
+            console.log('Hero video background failed to load, falling back to gradient');
+            (e.target as HTMLVideoElement).style.display = 'none';
+          }}
+        >
+          <source src="/hero-background-mp4.mp4" type="video/mp4" />
+        </video>
+        {/* Fallback gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-gray-900 to-black"></div>
+      </div>
       
-      <div className="relative max-w-7xl mx-auto px-2 sm:px-3 lg:px-4 pt-8 pb-4">
+      <div className="relative z-10 max-w-7xl mx-auto px-2 sm:px-3 lg:px-4 pt-8 pb-4">
         <div className="grid lg:grid-cols-2 gap-12 lg:items-start">
           <div className="text-center lg:text-left pt-6 lg:pt-12">
             <h1 className="text-5xl lg:text-6xl font-bold text-white mb-6">
