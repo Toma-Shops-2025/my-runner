@@ -13,6 +13,7 @@ import { Switch } from '@/components/ui/switch';
 import { User, Settings, Shield, Bell, ArrowLeft } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/lib/supabase';
+import { getExistingSubscription, subscribeToPush, isPushSupported } from '@/services/pushNotificationService';
 
 type ProfileTab = 'profile' | 'account' | 'security' | 'notifications';
 
@@ -29,6 +30,15 @@ const ProfilePage: React.FC = () => {
     orderUpdates: true,
     driverUpdates: true,
     systemAlerts: true,
+  });
+  const [pushSubscriptionStatus, setPushSubscriptionStatus] = useState<{
+    hasPermission: boolean;
+    hasSubscription: boolean;
+    isSupported: boolean;
+  }>({
+    hasPermission: false,
+    hasSubscription: false,
+    isSupported: false,
   });
 
   // Sync form data with profile when profile changes
@@ -55,6 +65,37 @@ const ProfilePage: React.FC = () => {
       console.warn('Failed to load notification preferences', error);
     }
   }, []);
+
+  // Check push notification status
+  useEffect(() => {
+    const checkPushStatus = async () => {
+      const supported = isPushSupported();
+      const permission = typeof window !== 'undefined' && 'Notification' in window 
+        ? Notification.permission 
+        : 'denied';
+      
+      let hasSubscription = false;
+      if (supported && permission === 'granted') {
+        try {
+          const subscription = await getExistingSubscription();
+          hasSubscription = !!subscription;
+        } catch (error) {
+          console.error('Error checking push subscription:', error);
+        }
+      }
+
+      setPushSubscriptionStatus({
+        isSupported: supported,
+        hasPermission: permission === 'granted',
+        hasSubscription,
+      });
+    };
+
+    checkPushStatus();
+    // Check again every 5 seconds in case user enables notifications
+    const interval = setInterval(checkPushStatus, 5000);
+    return () => clearInterval(interval);
+  }, [user]);
 
   if (loading) {
     return (
@@ -188,6 +229,45 @@ const handlePasswordReset = async () => {
       }
       return updated;
     });
+  };
+
+  const enablePushNotifications = async () => {
+    try {
+      await subscribeToPush(profile);
+      toast({
+        title: 'Push notifications enabled!',
+        description: 'You will now receive push notifications on your device.',
+      });
+      // Refresh status
+      const subscription = await getExistingSubscription();
+      setPushSubscriptionStatus(prev => ({
+        ...prev,
+        hasPermission: Notification.permission === 'granted',
+        hasSubscription: !!subscription,
+      }));
+    } catch (error: any) {
+      toast({
+        title: 'Failed to enable push notifications',
+        description: error.message || 'Please try again.',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const getNotificationStatus = () => {
+    if (!pushSubscriptionStatus.isSupported) {
+      return { text: 'Push notifications not supported in this browser', color: 'bg-gray-400' };
+    }
+    
+    if (!pushSubscriptionStatus.hasPermission) {
+      return { text: 'Notifications not configured', color: 'bg-red-400' };
+    }
+    
+    if (!pushSubscriptionStatus.hasSubscription) {
+      return { text: 'Push subscription pending', color: 'bg-yellow-400' };
+    }
+    
+    return { text: 'Notifications enabled', color: 'bg-green-400' };
   };
 
   return (
@@ -521,24 +601,36 @@ const handlePasswordReset = async () => {
 
                 {/* Current Status */}
                 <div className="rounded-2xl border border-white/15 bg-black/45 backdrop-blur-md p-4 shadow-xl">
-                  <h4 className="font-semibold mb-2 text-white drop-shadow">Current Status</h4>
-                  <div className="flex items-center space-x-3 text-white/90">
-                    <div className={`w-3 h-3 rounded-full ${
-                      'Notification' in window && Notification.permission === 'granted' 
-                        ? 'bg-green-400' 
-                        : 'bg-red-400'
-                    }`} />
-                    <span className="text-sm">
-                      {typeof window !== 'undefined' && 'Notification' in window 
-                        ? Notification.permission === 'granted' 
-                          ? 'Notifications enabled' 
-                          : Notification.permission === 'denied' 
-                            ? 'Notifications blocked' 
-                            : 'Notifications not configured'
-                        : 'Notifications not supported'
-                      }
-                    </span>
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="font-semibold text-white drop-shadow">Current Status</h4>
+                    {!pushSubscriptionStatus.hasSubscription && pushSubscriptionStatus.isSupported && (
+                      <Button
+                        size="sm"
+                        onClick={enablePushNotifications}
+                        className="bg-teal-600 hover:bg-teal-700 text-white"
+                      >
+                        Enable Push Notifications
+                      </Button>
+                    )}
                   </div>
+                  <div className="flex items-center space-x-3 text-white/90">
+                    {(() => {
+                      const status = getNotificationStatus();
+                      return (
+                        <>
+                          <div className={`w-3 h-3 rounded-full ${status.color}`} />
+                          <span className="text-sm">{status.text}</span>
+                        </>
+                      );
+                    })()}
+                  </div>
+                  {pushSubscriptionStatus.hasSubscription && (
+                    <p className="text-xs text-white/70 mt-2">
+                      ✓ Browser permission granted<br />
+                      ✓ Push subscription active<br />
+                      ✓ Ready to receive notifications
+                    </p>
+                  )}
                 </div>
 
                 {/* Notification Types */}
