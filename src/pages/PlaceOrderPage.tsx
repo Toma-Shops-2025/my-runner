@@ -95,7 +95,7 @@ const PlaceOrderPage: React.FC = () => {
 
   const calculateEstimate = () => {
     // Simple calculation - in real app, this would use distance API
-    const baseFee = 5.00;
+    const baseFee = 5.99;
     const distanceFee = 2.50;
     return baseFee + distanceFee;
   };
@@ -305,7 +305,7 @@ const PlaceOrderPage: React.FC = () => {
               <div className="space-y-2">
                 <div className="flex justify-between text-gray-300">
                   <span>Base Fee</span>
-                  <span>$0.00</span>
+                  <span>$5.99</span>
                 </div>
                 <div className="flex justify-between text-gray-300">
                   <span>Distance Fee</span>

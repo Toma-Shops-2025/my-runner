@@ -28,6 +28,106 @@ const CustomerNotificationSystem: React.FC = () => {
       fetchNotifications();
       // Set up real-time subscription to order updates
       setupRealtimeSubscription();
+      
+      // Add test functions to window for console testing
+      (window as any).testCustomerPush = async () => {
+        console.log('🧪 Testing customer push notification...');
+        try {
+          const { data: orders } = await supabase
+            .from('orders')
+            .select('id, status')
+            .eq('customer_id', user.id)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .single();
+          
+          if (orders) {
+            const testNotification: OrderNotification = {
+              id: `test-${Date.now()}`,
+              orderId: orders.id,
+              type: 'status_update',
+              title: 'Test Notification',
+              message: 'This is a test push notification!',
+              status: 'pending',
+              timestamp: new Date().toISOString(),
+              is_read: false
+            };
+            
+            setNotifications(prev => [testNotification, ...prev]);
+            
+            if (Notification.permission === 'granted') {
+              new Notification(testNotification.title, {
+                body: testNotification.message,
+                icon: '/favicon.png'
+              });
+              console.log('✅ Browser notification sent!');
+            } else {
+              console.log('⚠️ Notification permission not granted. Requesting...');
+              const permission = await Notification.requestPermission();
+              if (permission === 'granted') {
+                new Notification(testNotification.title, {
+                  body: testNotification.message,
+                  icon: '/favicon.png'
+                });
+                console.log('✅ Browser notification sent after permission grant!');
+              }
+            }
+            
+            console.log('✅ Test notification created!');
+          } else {
+            console.log('⚠️ No orders found. Creating test notification anyway...');
+            const testNotification: OrderNotification = {
+              id: `test-${Date.now()}`,
+              orderId: 'test-order',
+              type: 'status_update',
+              title: 'Test Notification',
+              message: 'This is a test push notification!',
+              status: 'pending',
+              timestamp: new Date().toISOString(),
+              is_read: false
+            };
+            
+            setNotifications(prev => [testNotification, ...prev]);
+            
+            if (Notification.permission === 'granted') {
+              new Notification(testNotification.title, {
+                body: testNotification.message,
+                icon: '/favicon.png'
+              });
+              console.log('✅ Browser notification sent!');
+            }
+          }
+        } catch (error) {
+          console.error('❌ Test failed:', error);
+        }
+      };
+      
+      (window as any).testCustomerNotificationCheck = async () => {
+        console.log('🔍 Checking customer notification setup...');
+        console.log('Permission:', Notification.permission);
+        console.log('Service Worker support:', 'serviceWorker' in navigator);
+        console.log('Push Manager support:', 'PushManager' in window);
+        
+        try {
+          const { data: notifications } = await supabase
+            .from('customer_notifications')
+            .select('*')
+            .eq('customer_id', user.id)
+            .order('created_at', { ascending: false })
+            .limit(5);
+          
+          console.log('Recent notifications in DB:', notifications?.length || 0);
+          if (notifications && notifications.length > 0) {
+            console.log('Latest notification:', notifications[0]);
+          }
+        } catch (error) {
+          console.error('Error checking notifications:', error);
+        }
+      };
+      
+      console.log('💡 Customer notification test commands available:');
+      console.log('   - testCustomerPush() - Test push notification');
+      console.log('   - testCustomerNotificationCheck() - Check notification setup');
     }
   }, [user, profile]);
 
