@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { Navigate, useNavigate } from 'react-router-dom';
 import NewHeader from '@/components/NewHeader';
-import DriverNotificationSystem from '@/components/DriverNotificationSystem';
 import DriverOnboarding from '@/components/DriverOnboarding';
 import DriverNavigation from '@/components/DriverNavigation';
 import DocumentExpirationWarning from '@/components/DocumentExpirationWarning';
@@ -707,7 +706,6 @@ const NewDriverDashboardPage: React.FC = () => {
 
       <NewHeader />
       <PushNotificationPrompt />
-      <DriverNotificationSystem />
       
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-8">
