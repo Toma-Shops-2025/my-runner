@@ -9,6 +9,7 @@ interface HeroSectionProps {
 const HeroSection: React.FC<HeroSectionProps> = ({ onRequestPickup, onBecomeDriver }) => {
   const navigate = useNavigate();
   return (
+    <>
     <section className="relative min-h-screen overflow-hidden">
       {/* Video Background */}
       <video 
@@ -96,6 +97,22 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onRequestPickup, onBecomeDriv
       </div>
 
     </section>
+
+    {/* Video section directly under the hero */}
+    <section className="relative py-8">
+      <div className="max-w-7xl mx-auto px-2 sm:px-3 lg:px-4">
+        <div className="relative w-full overflow-hidden rounded-3xl shadow-2xl border border-white/10 aspect-video">
+          <iframe
+            src="https://www.youtube.com/embed/XkNyI7N4p-U?si=kYublFXdMH9BbQIn"
+            title="MY-RUNNER.COM Video"
+            className="absolute inset-0 h-full w-full"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+          ></iframe>
+        </div>
+      </div>
+    </section>
+    </>
   );
 };
 
