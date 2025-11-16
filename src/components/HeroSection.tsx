@@ -93,18 +93,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onRequestPickup, onBecomeDriv
             />
           </div>
         </div>
-
-        <div className="mt-4">
-          <div className="relative w-full overflow-hidden rounded-3xl shadow-2xl border border-white/10 aspect-video">
-            <iframe
-              src="https://www.youtube.com/embed/XkNyI7N4p-U"
-              title="MY-RUNNER.COM Video"
-              className="absolute inset-0 h-full w-full"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
-            ></iframe>
-          </div>
-        </div>
       </div>
 
     </section>
