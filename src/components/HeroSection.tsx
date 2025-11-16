@@ -84,13 +84,23 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onRequestPickup, onBecomeDriv
             </div>
           </div>
 
-          <div className="relative flex items-center justify-center">
+          <div className="relative flex flex-col items-center justify-center gap-6">
             {/* Hero Logo */}
             <img
               src="/hero-logo.png"
               alt="MY-RUNNER.COM hero"
               className="w-full max-w-[30rem] sm:max-w-[34rem] lg:max-w-[38rem] object-contain drop-shadow-[0_22px_48px_rgba(59,130,246,0.45)] transition-transform duration-500 ease-out -translate-y-[2rem]"
             />
+            {/* Video directly under the logo */}
+            <div className="w-full max-w-[38rem] overflow-hidden rounded-2xl shadow-2xl border border-white/10 aspect-video">
+              <iframe
+                src="https://www.youtube.com/embed/XkNyI7N4p-U?si=kYublFXdMH9BbQIn"
+                title="MY-RUNNER.COM Video"
+                className="absolute inset-0 h-full w-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              ></iframe>
+            </div>
           </div>
         </div>
       </div>
