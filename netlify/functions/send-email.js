@@ -3,7 +3,7 @@ const sgMail = require('@sendgrid/mail');
 const {
   SENDGRID_API_KEY,
   SENDGRID_FROM_EMAIL,
-  SENDGRID_DEFAULT_FROM = 'noreply@mypartsrunner.com',
+  SENDGRID_DEFAULT_FROM = 'noreply@my-runner.com',
 } = process.env;
 
 function configureClient() {

@@ -111,7 +111,7 @@ const PrivacyPage = () => {
 
             <h2>11. Contact Us</h2>
             <p>
-              If you have questions about this privacy policy, contact us at privacy@mypartsrunner.com or 1-800-PARTS-RUN.
+              If you have questions about this privacy policy, contact us at privacy@my-runner.com or 1-800-PARTS-RUN.
             </p>
           </CardContent>
         </Card>

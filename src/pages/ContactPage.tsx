@@ -49,7 +49,7 @@ const ContactPage = () => {
       console.error('Error submitting contact form:', error);
       toast({
         title: "Error sending message",
-        description: "Please try again or contact us directly at support@mypartsrunner.com",
+        description: "Please try again or contact us directly at support@my-runner.com",
         variant: "destructive",
       });
     } finally {

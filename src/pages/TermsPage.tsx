@@ -94,7 +94,7 @@ const TermsPage = () => {
 
             <h2>10. Contact Information</h2>
             <p>
-              For questions about these terms, contact us at legal@mypartsrunner.com or 1-800-PARTS-RUN.
+              For questions about these terms, contact us at legal@my-runner.com or 1-800-PARTS-RUN.
             </p>
           </CardContent>
         </Card>

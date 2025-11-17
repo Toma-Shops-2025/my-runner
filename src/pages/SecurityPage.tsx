@@ -84,7 +84,7 @@ const SecurityPage: React.FC = () => {
                 <li>• Supabase security policy summary and backup schedule</li>
               </ul>
               <p className="text-xs text-gray-400">
-                Need a copy? Email <a href="mailto:legal@mypartsrunner.com" className="text-emerald-300 underline">legal@mypartsrunner.com</a>
+                Need a copy? Email <a href="mailto:legal@my-runner.com" className="text-emerald-300 underline">legal@my-runner.com</a>
                 with subject “Documentation Request” and allow up to one business day.
               </p>
             </CardContent>
@@ -111,8 +111,8 @@ const SecurityPage: React.FC = () => {
         <section className="text-center space-y-4">
           <p className="text-gray-300">
             For audits, partnership reviews, or legal inquiries, contact our compliance desk directly at{' '}
-            <a href="mailto:compliance@mypartsrunner.com" className="text-emerald-300 underline">
-              compliance@mypartsrunner.com
+            <a href="mailto:compliance@my-runner.com" className="text-emerald-300 underline">
+              compliance@my-runner.com
             </a>.
           </p>
           <Button
