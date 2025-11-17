@@ -23,8 +23,63 @@ const MyOrdersPage: React.FC = () => {
   useEffect(() => {
     if (user) {
       fetchOrders();
+      
+      // Add test functions to window for console testing (if customer)
+      if (profile?.user_type === 'customer') {
+        (window as any).testCustomerPush = async () => {
+          console.log('🧪 Testing customer push notification...');
+          try {
+            if (Notification.permission === 'granted') {
+              new Notification('Test Notification', {
+                body: 'This is a test push notification!',
+                icon: '/favicon.png'
+              });
+              console.log('✅ Browser notification sent!');
+            } else {
+              console.log('⚠️ Notification permission not granted. Requesting...');
+              const permission = await Notification.requestPermission();
+              if (permission === 'granted') {
+                new Notification('Test Notification', {
+                  body: 'This is a test push notification!',
+                  icon: '/favicon.png'
+                });
+                console.log('✅ Browser notification sent after permission grant!');
+              }
+            }
+          } catch (error) {
+            console.error('❌ Test failed:', error);
+          }
+        };
+        
+        (window as any).testCustomerNotificationCheck = async () => {
+          console.log('🔍 Checking customer notification setup...');
+          console.log('Permission:', Notification.permission);
+          console.log('Service Worker support:', 'serviceWorker' in navigator);
+          console.log('Push Manager support:', 'PushManager' in window);
+          
+          try {
+            const { data: notifications } = await supabase
+              .from('customer_notifications')
+              .select('*')
+              .eq('customer_id', user.id)
+              .order('created_at', { ascending: false })
+              .limit(5);
+            
+            console.log('Recent notifications in DB:', notifications?.length || 0);
+            if (notifications && notifications.length > 0) {
+              console.log('Latest notification:', notifications[0]);
+            }
+          } catch (error) {
+            console.error('Error checking notifications:', error);
+          }
+        };
+        
+        console.log('💡 Customer notification test commands available:');
+        console.log('   - testCustomerPush() - Test push notification');
+        console.log('   - testCustomerNotificationCheck() - Check notification setup');
+      }
     }
-  }, [user]);
+  }, [user, profile]);
 
   const fetchOrders = async () => {
     try {
