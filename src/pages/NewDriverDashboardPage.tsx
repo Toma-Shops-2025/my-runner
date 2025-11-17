@@ -61,6 +61,72 @@ const NewDriverDashboardPage: React.FC = () => {
       fetchDriverData();
       checkTrackingStatus(); // Load online status from database
       
+      // Add test functions to window for console testing
+      (window as any).testDriverPush = async () => {
+        if (!user?.id) {
+          console.error('❌ No user ID found');
+          return;
+        }
+        console.log('🧪 Testing driver push notification...');
+        try {
+          const response = await fetch('/.netlify/functions/send-driver-push', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              userId: user.id,
+              title: 'Test Notification',
+              body: 'This is a test push notification for drivers!',
+              data: { test: true, type: 'test' }
+            })
+          });
+          
+          const data = await response.json();
+          if (response.ok) {
+            console.log('✅ Push notification sent!', data);
+          } else {
+            console.error('❌ Failed to send push notification:', data);
+          }
+        } catch (error) {
+          console.error('❌ Test failed:', error);
+        }
+      };
+      
+      (window as any).testDriverPushCheck = async () => {
+        console.log('🔍 Checking driver push notification setup...');
+        console.log('Permission:', Notification.permission);
+        console.log('Service Worker support:', 'serviceWorker' in navigator);
+        console.log('Push Manager support:', 'PushManager' in window);
+        
+        try {
+          const registration = await navigator.serviceWorker.ready;
+          const subscription = await registration.pushManager.getSubscription();
+          console.log('Has push subscription:', !!subscription);
+          if (subscription) {
+            const subJson = subscription.toJSON();
+            console.log('Subscription endpoint:', subJson.endpoint?.substring(0, 50) + '...');
+            console.log('Has keys:', !!subJson.keys);
+          }
+          
+          if (user?.id) {
+            const { data: subscriptions } = await supabase
+              .from('push_subscriptions')
+              .select('*')
+              .eq('user_id', user.id);
+            
+            console.log('Subscriptions in database:', subscriptions?.length || 0);
+            if (subscriptions && subscriptions.length > 0) {
+              console.log('Latest subscription:', subscriptions[0]);
+            }
+          }
+        } catch (error) {
+          console.error('Error checking subscription:', error);
+        }
+      };
+      
+      console.log('💡 Driver push notification test commands available:');
+      console.log('   - testDriverPush() - Test push notification');
+      console.log('   - testDriverPushCheck() - Check push notification setup');
+      
       // Check if returning from Stripe onboarding (URL params)
       const urlParams = new URLSearchParams(window.location.search);
       const stripeSuccess = urlParams.get('success');
