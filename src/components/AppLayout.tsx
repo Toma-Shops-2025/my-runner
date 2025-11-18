@@ -118,11 +118,6 @@ const AppLayout: React.FC = () => {
               }}
             />
             
-            {/* Promotional Video - Show for all users */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-              <PromotionalVideo />
-            </div>
-            
             <HowItWorksSection 
               onRequestPickup={() => {
                 if (user && profile?.user_type === 'customer') {
