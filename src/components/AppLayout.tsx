@@ -23,7 +23,6 @@ import EndToEndTest from './EndToEndTest';
 import ProductionMonitoring from './ProductionMonitoring';
 import CustomerSupport from './CustomerSupport';
 import DisputeResolutionSystem from './DisputeResolutionSystem';
-import PromotionalVideo from './PromotionalVideo';
 
 const AppLayout: React.FC = () => {
   const { user, profile } = useAuth();
