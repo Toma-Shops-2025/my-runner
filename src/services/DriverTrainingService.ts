@@ -70,7 +70,7 @@ export class DriverTrainingService {
 
       if (!data || data.length === 0) {
         return {
-          totalVideos: 5,
+          totalVideos: 7,
           completedVideos: 0,
           completionPercentage: 0,
           isFullyCompleted: false
@@ -120,38 +120,52 @@ export class DriverTrainingService {
     const trainingVideos: Omit<TrainingVideo, 'completed' | 'completedAt'>[] = [
       {
         id: 1,
-        title: "Welcome to MY-RUNNER.COM",
+        title: "Module 1: Welcome to MY-RUNNER.COM",
         description: "Welcome to the MY-RUNNER.COM family! Learn about our platform, driver benefits, and how to get started on your journey to success.",
         duration: "1-2 minutes",
-        youtubeUrl: "https://www.youtube.com/embed/zXXTd81HXg4"
+        youtubeUrl: "https://www.youtube.com/embed/zoFQjmjPeMw"
       },
       {
         id: 2,
-        title: "Driver Dashboard Overview",
+        title: "Module 2: Driver Dashboard Overview",
         description: "Master the driver dashboard, learn how to go online/offline, accept orders, and navigate to pickup locations efficiently.",
         duration: "2-3 minutes",
-        youtubeUrl: "https://www.youtube.com/embed/z6vBcxe4a1Y"
+        youtubeUrl: "https://www.youtube.com/embed/jwzEiHOXmmQ"
       },
       {
         id: 3,
-        title: "Maximizing Your Earnings",
+        title: "Module 3: Maximizing Your Earnings",
         description: "Discover peak hours, high-demand areas, order selection strategies, and tips to maximize your earnings as a MY-RUNNER.COM driver.",
         duration: "3-4 minutes",
-        youtubeUrl: "https://www.youtube.com/embed/7vOyfgpVHLU"
+        youtubeUrl: "https://www.youtube.com/embed/ElsekRN0mpo"
       },
       {
         id: 4,
-        title: "Customer Service Excellence",
+        title: "Module 4: Customer Service Excellence",
         description: "Learn professional communication, handling difficult situations, building customer relationships, and providing exceptional service.",
         duration: "2-3 minutes",
-        youtubeUrl: "https://www.youtube.com/embed/wq0bbatXx7A"
+        youtubeUrl: "https://www.youtube.com/embed/UoMyFjJrnv8"
       },
       {
         id: 5,
-        title: "Safety First",
+        title: "Module 5: Safety First",
         description: "Understand personal safety protocols, vehicle safety checks, emergency procedures, and maintaining safety standards while driving.",
         duration: "2-3 minutes",
-        youtubeUrl: "https://www.youtube.com/embed/YnN2n1Ek5z8"
+        youtubeUrl: "https://www.youtube.com/embed/tC-OaHRDCDM"
+      },
+      {
+        id: 6,
+        title: "Module 6: Advanced Delivery Techniques",
+        description: "Learn advanced delivery strategies, handling special requests, multi-stop deliveries, and optimizing your delivery routes for maximum efficiency.",
+        duration: "2-3 minutes",
+        youtubeUrl: "https://www.youtube.com/embed/uZmFCTJudwk"
+      },
+      {
+        id: 7,
+        title: "Module 7: Professional Development",
+        description: "Master professional skills, building your reputation, handling challenges, and growing your career as a MY-RUNNER.COM driver.",
+        duration: "2-3 minutes",
+        youtubeUrl: "https://www.youtube.com/embed/-vFXpfe-c3I"
       }
     ];
 
@@ -230,11 +244,13 @@ export class DriverTrainingService {
    */
   private static getVideoTitleById(videoId: number): string | null {
     const titles: { [key: number]: string } = {
-      1: "Welcome to MY-RUNNER.COM",
-      2: "Driver Dashboard Overview", 
-      3: "Maximizing Your Earnings",
-      4: "Customer Service Excellence",
-      5: "Safety First"
+      1: "Module 1: Welcome to MY-RUNNER.COM",
+      2: "Module 2: Driver Dashboard Overview", 
+      3: "Module 3: Maximizing Your Earnings",
+      4: "Module 4: Customer Service Excellence",
+      5: "Module 5: Safety First",
+      6: "Module 6: Advanced Delivery Techniques",
+      7: "Module 7: Professional Development"
     };
     return titles[videoId] || null;
   }
