@@ -147,7 +147,7 @@ const DriverTraining: React.FC = () => {
               <div>
                 <h3 className="text-xl font-semibold text-white">Training Progress</h3>
                 <p className="text-teal-100">
-                  {trainingProgress?.completedVideos || 0} of {trainingProgress?.totalVideos || 7} videos completed
+                  {trainingProgress?.completedVideos || 0} of 7 videos completed
                 </p>
                 {trainingProgress?.lastCompletionDate && (
                   <p className="text-teal-200 text-sm">

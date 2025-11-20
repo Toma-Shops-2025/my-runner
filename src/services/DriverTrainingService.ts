@@ -78,11 +78,17 @@ export class DriverTrainingService {
       }
 
       const progress = data[0];
+      // Always use 7 as total videos (updated from 5 to 7 modules)
+      const totalVideos = 7;
+      const completedVideos = progress.completed_videos || 0;
+      const completionPercentage = totalVideos > 0 ? Math.round((completedVideos / totalVideos) * 100) : 0;
+      const isFullyCompleted = completedVideos >= totalVideos;
+      
       return {
-        totalVideos: progress.total_videos,
-        completedVideos: progress.completed_videos,
-        completionPercentage: progress.completion_percentage,
-        isFullyCompleted: progress.is_fully_completed,
+        totalVideos: totalVideos,
+        completedVideos: completedVideos,
+        completionPercentage: completionPercentage,
+        isFullyCompleted: isFullyCompleted,
         lastCompletionDate: progress.last_completion_date
       };
     } catch (error) {
