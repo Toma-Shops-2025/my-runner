@@ -54,7 +54,7 @@ const RequestPickupModal: React.FC<RequestPickupModalProps> = ({ isOpen, onClose
     if (!formData.pickupAddress || !formData.deliveryAddress) return 0;
     
     // Use the same pricing logic as the main system
-    const baseFee = 5.00;
+    const baseFee = 5.99;
     const urgencyFee = formData.urgency === 'urgent' ? 5.00 : 0;
     
     // Simple distance calculation for now - in production this would use Mapbox

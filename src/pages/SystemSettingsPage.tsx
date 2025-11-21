@@ -13,7 +13,7 @@ import { Settings, DollarSign, Clock, Bell, Shield } from 'lucide-react';
 const SystemSettingsPage: React.FC = () => {
   const { user, profile } = useAuth();
   const [settings, setSettings] = useState({
-    baseFare: 5.00,
+    baseFare: 5.99,
     perMileFare: 2.50,
     minimumFare: 1.00,
     commissionRate: 20,
